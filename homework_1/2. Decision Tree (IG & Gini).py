@@ -140,7 +140,7 @@ if __name__ == "__main__":
     plt.axvline(ig_train_mean - ig_train_std, color='green', linestyle='dotted', linewidth=1, label=f'Mean - Std: {ig_train_mean - ig_train_std:.4f}')
     plt.xlabel('Accuracy')
     plt.ylabel('Accuracy Frequency on Training Data')
-    plt.title(f'Information Gain - Training Accuracy Distribution\nMean: {ig_train_mean:.4f}, Std: {ig_train_std:.4f}')
+    plt.title(f'Information Gain- Training Accuracy Distribution\nMean: {ig_train_mean:.4f}, Std: {ig_train_std:.4f}')
     plt.legend()
     plt.show()
 
