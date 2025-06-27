@@ -1,7 +1,7 @@
 # Importing the Required Libraries
 import numpy as np
 import matplotlib.pyplot as plt
-import pandas as pd
+import pandas as pd 
 from collections import Counter
 from sklearn.model_selection import train_test_split
 
@@ -10,7 +10,7 @@ class DecisionNode:
     def __init__(self, feature=None, descendants=None, category=None):
         self.feature = feature
         self.descendants = descendants or {}
-        self.category = category
+        self.category = category 
 
 def entropy(sample):
     label_counts = Counter(row[-1] for row in sample)
