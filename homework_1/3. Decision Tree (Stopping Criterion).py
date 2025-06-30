@@ -105,83 +105,83 @@ def decision_tree(X_train, X_test, y_train, y_test, header, method, max_depth=No
     test_accuracy = assess_accuracy(tree, test_set, features)
     return train_accuracy, test_accuracy
 
+if __name__ == "__main__":
+    dataset = pd.read_csv('/content/car.csv', header=None)
+    header = dataset.iloc[0].tolist()
+    full_data = dataset.iloc[1:].values
 
-dataset = pd.read_csv('/content/car.csv', header=None)
-header = dataset.iloc[0].tolist()
-full_data = dataset.iloc[1:].values
+    X = full_data[:, :-1]
+    y = full_data[:, -1]
 
-X = full_data[:, :-1]
-y = full_data[:, -1]
+    max_depth = 5
 
-max_depth = 5
+    ig_train_accuracies = []
+    ig_test_accuracies = []
+    gini_train_accuracies = []
+    gini_test_accuracies = []
 
-ig_train_accuracies = []
-ig_test_accuracies = []
-gini_train_accuracies = []
-gini_test_accuracies = []
+    for _ in range(100):
+        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, shuffle=True)
+        
+        ig_train_acc, ig_test_acc = decision_tree(X_train, X_test, y_train, y_test, header, method=0, max_depth=max_depth)
+        gini_train_acc, gini_test_acc = decision_tree(X_train, X_test, y_train, y_test, header, method=1, max_depth=max_depth)
+        
+        ig_train_accuracies.append(ig_train_acc)
+        ig_test_accuracies.append(ig_test_acc)
+        gini_train_accuracies.append(gini_train_acc)
+        gini_test_accuracies.append(gini_test_acc)
 
-for _ in range(100):
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, shuffle=True)
-    
-    ig_train_acc, ig_test_acc = decision_tree(X_train, X_test, y_train, y_test, header, method=0, max_depth=max_depth)
-    gini_train_acc, gini_test_acc = decision_tree(X_train, X_test, y_train, y_test, header, method=1, max_depth=max_depth)
-    
-    ig_train_accuracies.append(ig_train_acc)
-    ig_test_accuracies.append(ig_test_acc)
-    gini_train_accuracies.append(gini_train_acc)
-    gini_test_accuracies.append(gini_test_acc)
+    # Plotting results with mean and standard deviation annotations
+    # Information Gain
+    plt.figure(figsize=(10, 6))
+    ig_train_mean = np.mean(ig_train_accuracies)
+    ig_train_std = np.std(ig_train_accuracies)
+    plt.hist(ig_train_accuracies, bins=20, edgecolor='black')
+    plt.axvline(ig_train_mean, color='red', linestyle='dashed', linewidth=1, label=f'Mean: {ig_train_mean:.4f}')
+    plt.axvline(ig_train_mean + ig_train_std, color='green', linestyle='dotted', linewidth=1, label=f'Mean + Std: {ig_train_mean + ig_train_std:.4f}')
+    plt.axvline(ig_train_mean - ig_train_std, color='green', linestyle='dotted', linewidth=1, label=f'Mean - Std: {ig_train_mean - ig_train_std:.4f}')
+    plt.xlabel('Accuracy')
+    plt.ylabel('Accuracy Frequency on Training Data')
+    plt.title(f'Information Gain - Training Accuracy Distribution\nMean: {ig_train_mean:.4f}, Std: {ig_train_std:.4f}')
+    plt.legend()
+    plt.show()
 
-# Plotting results with mean and standard deviation annotations
-# Information Gain
-plt.figure(figsize=(10, 6))
-ig_train_mean = np.mean(ig_train_accuracies)
-ig_train_std = np.std(ig_train_accuracies)
-plt.hist(ig_train_accuracies, bins=20, edgecolor='black')
-plt.axvline(ig_train_mean, color='red', linestyle='dashed', linewidth=1, label=f'Mean: {ig_train_mean:.4f}')
-plt.axvline(ig_train_mean + ig_train_std, color='green', linestyle='dotted', linewidth=1, label=f'Mean + Std: {ig_train_mean + ig_train_std:.4f}')
-plt.axvline(ig_train_mean - ig_train_std, color='green', linestyle='dotted', linewidth=1, label=f'Mean - Std: {ig_train_mean - ig_train_std:.4f}')
-plt.xlabel('Accuracy')
-plt.ylabel('Accuracy Frequency on Training Data')
-plt.title(f'Information Gain - Training Accuracy Distribution\nMean: {ig_train_mean:.4f}, Std: {ig_train_std:.4f}')
-plt.legend()
-plt.show()
+    plt.figure(figsize=(10, 6))
+    ig_test_mean = np.mean(ig_test_accuracies)
+    ig_test_std = np.std(ig_test_accuracies)
+    plt.hist(ig_test_accuracies, bins=20, edgecolor='black')
+    plt.axvline(ig_test_mean, color='red', linestyle='dashed', linewidth=1, label=f'Mean: {ig_test_mean:.4f}')
+    plt.axvline(ig_test_mean + ig_test_std, color='green', linestyle='dotted', linewidth=1, label=f'Mean + Std: {ig_test_mean + ig_test_std:.4f}')
+    plt.axvline(ig_test_mean - ig_test_std, color='green', linestyle='dotted', linewidth=1, label=f'Mean - Std: {ig_test_mean - ig_test_std:.4f}')
+    plt.xlabel('Accuracy')
+    plt.ylabel('Accuracy Frequency on Testing Data')
+    plt.title(f'Information Gain - Testing Accuracy Distribution\nMean: {ig_test_mean:.4f}, Std: {ig_test_std:.4f}')
+    plt.legend()
+    plt.show()
 
-plt.figure(figsize=(10, 6))
-ig_test_mean = np.mean(ig_test_accuracies)
-ig_test_std = np.std(ig_test_accuracies)
-plt.hist(ig_test_accuracies, bins=20, edgecolor='black')
-plt.axvline(ig_test_mean, color='red', linestyle='dashed', linewidth=1, label=f'Mean: {ig_test_mean:.4f}')
-plt.axvline(ig_test_mean + ig_test_std, color='green', linestyle='dotted', linewidth=1, label=f'Mean + Std: {ig_test_mean + ig_test_std:.4f}')
-plt.axvline(ig_test_mean - ig_test_std, color='green', linestyle='dotted', linewidth=1, label=f'Mean - Std: {ig_test_mean - ig_test_std:.4f}')
-plt.xlabel('Accuracy')
-plt.ylabel('Accuracy Frequency on Testing Data')
-plt.title(f'Information Gain - Testing Accuracy Distribution\nMean: {ig_test_mean:.4f}, Std: {ig_test_std:.4f}')
-plt.legend()
-plt.show()
+    # Gini Criterion
+    plt.figure(figsize=(10, 6))
+    gini_train_mean = np.mean(gini_train_accuracies)
+    gini_train_std = np.std(gini_train_accuracies)
+    plt.hist(gini_train_accuracies, bins=20, edgecolor='black')
+    plt.axvline(gini_train_mean, color='red', linestyle='dashed', linewidth=1, label=f'Mean: {gini_train_mean:.4f}')
+    plt.axvline(gini_train_mean + gini_train_std, color='green', linestyle='dotted', linewidth=1, label=f'Mean + Std: {gini_train_mean + gini_train_std:.4f}')
+    plt.axvline(gini_train_mean - gini_train_std, color='green', linestyle='dotted', linewidth=1, label=f'Mean - Std: {gini_train_mean - gini_train_std:.4f}')
+    plt.xlabel('Accuracy')
+    plt.ylabel('Accuracy Frequency on Training Data')
+    plt.title(f'Gini Criterion - Training Accuracy Distribution\nMean: {gini_train_mean:.4f}, Std: {gini_train_std:.4f}')
+    plt.legend()
+    plt.show()
 
-# Gini Criterion
-plt.figure(figsize=(10, 6))
-gini_train_mean = np.mean(gini_train_accuracies)
-gini_train_std = np.std(gini_train_accuracies)
-plt.hist(gini_train_accuracies, bins=20, edgecolor='black')
-plt.axvline(gini_train_mean, color='red', linestyle='dashed', linewidth=1, label=f'Mean: {gini_train_mean:.4f}')
-plt.axvline(gini_train_mean + gini_train_std, color='green', linestyle='dotted', linewidth=1, label=f'Mean + Std: {gini_train_mean + gini_train_std:.4f}')
-plt.axvline(gini_train_mean - gini_train_std, color='green', linestyle='dotted', linewidth=1, label=f'Mean - Std: {gini_train_mean - gini_train_std:.4f}')
-plt.xlabel('Accuracy')
-plt.ylabel('Accuracy Frequency on Training Data')
-plt.title(f'Gini Criterion - Training Accuracy Distribution\nMean: {gini_train_mean:.4f}, Std: {gini_train_std:.4f}')
-plt.legend()
-plt.show()
-
-plt.figure(figsize=(10, 6))
-gini_test_mean = np.mean(gini_test_accuracies)
-gini_test_std = np.std(gini_test_accuracies)
-plt.hist(gini_test_accuracies, bins=20, edgecolor='black')
-plt.axvline(gini_test_mean, color='red', linestyle='dashed', linewidth=1, label=f'Mean: {gini_test_mean:.4f}')
-plt.axvline(gini_test_mean + gini_test_std, color='green', linestyle='dotted', linewidth=1, label=f'Mean + Std: {gini_test_mean + gini_test_std:.4f}')
-plt.axvline(gini_test_mean - gini_test_std, color='green', linestyle='dotted', linewidth=1, label=f'Mean - Std: {gini_test_mean - gini_test_std:.4f}')
-plt.xlabel('Accuracy')
-plt.ylabel('Accuracy Frequency on Testing Data')
-plt.title(f'Gini Criterion - Testing Accuracy Distribution\nMean: {gini_test_mean:.4f}, Std: {gini_test_std:.4f}')
-plt.legend()
-plt.show()
+    plt.figure(figsize=(10, 6))
+    gini_test_mean = np.mean(gini_test_accuracies)
+    gini_test_std = np.std(gini_test_accuracies)
+    plt.hist(gini_test_accuracies, bins=20, edgecolor='black')
+    plt.axvline(gini_test_mean, color='red', linestyle='dashed', linewidth=1, label=f'Mean: {gini_test_mean:.4f}')
+    plt.axvline(gini_test_mean + gini_test_std, color='green', linestyle='dotted', linewidth=1, label=f'Mean + Std: {gini_test_mean + gini_test_std:.4f}')
+    plt.axvline(gini_test_mean - gini_test_std, color='green', linestyle='dotted', linewidth=1, label=f'Mean - Std: {gini_test_mean - gini_test_std:.4f}')
+    plt.xlabel('Accuracy')
+    plt.ylabel('Accuracy Frequency on Testing Data')
+    plt.title(f'Gini Criterion - Testing Accuracy Distribution\nMean: {gini_test_mean:.4f}, Std: {gini_test_std:.4f}')
+    plt.legend()
+    plt.show()
